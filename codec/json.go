@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"io"
+	"log"
 )
 
 type JsonCodec struct {
@@ -27,15 +28,20 @@ func (j *JsonCodec) ReadBody(body interface{}) error {
 
 func (j *JsonCodec) Write(header *Header, body interface{}) (err error) {
 	defer func() {
-		_ = j.buf.Flush()
+		if flushErr := j.buf.Flush(); flushErr != nil {
+			log.Println("JsonCodec Write flush buf err: ", err)
+			err = flushErr
+		}
 		if err != nil {
 			_ = j.Close()
 		}
 	}()
 	if err := j.encoder.Encode(header); err != nil {
+		log.Printf("JsonCodec Write encode header failed. header: %v, err: %v", header, err)
 		return err
 	}
 	if err := j.encoder.Encode(body); err != nil {
+		log.Printf("JsonCodec Write encode body failed. header: %v, err: %v", header, err)
 		return err
 	}
 	return nil

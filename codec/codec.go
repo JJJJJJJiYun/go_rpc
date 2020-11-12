@@ -14,14 +14,15 @@ type Header struct {
 	Error string
 }
 
+// Codec 打解包器
 type Codec interface {
 	io.Closer
-	ReadHeader(*Header) error
-	ReadBody(interface{}) error
-	Write(*Header, interface{}) error
+	ReadHeader(header *Header) error
+	ReadBody(body interface{}) error
+	Write(header *Header, body interface{}) error
 }
 
-type NewCodecFunc func(closer io.ReadWriteCloser) Codec
+type NewCodecFunc func(rwc io.ReadWriteCloser) Codec
 
 type Type string
 
