@@ -1,6 +1,8 @@
 package codec
 
-import "io"
+import (
+	"io"
+)
 
 // 请求头
 type Header struct {
@@ -31,5 +33,5 @@ var NewCodecFuncMap map[Type]NewCodecFunc
 
 func init() {
 	NewCodecFuncMap = make(map[Type]NewCodecFunc)
-	NewCodecFuncMap[JsonType] = NewJsonCodec
+	NewCodecFuncMap[JsonType] = newJsonCodec
 }

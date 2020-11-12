@@ -41,7 +41,7 @@ func (j *JsonCodec) Write(header *Header, body interface{}) (err error) {
 	return nil
 }
 
-func NewJsonCodec(conn io.ReadWriteCloser) Codec {
+func newJsonCodec(conn io.ReadWriteCloser) Codec {
 	buf := bufio.NewWriter(conn)
 	return &JsonCodec{
 		conn:    conn,
