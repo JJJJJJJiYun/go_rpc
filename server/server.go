@@ -10,6 +10,7 @@ import (
 	"sync"
 
 	"github.com/JJJJJJJiYun/go_rpc/codec"
+	"github.com/JJJJJJJiYun/go_rpc/opt"
 )
 
 type Server struct{}
@@ -32,14 +33,14 @@ func (s *Server) Accept(lis net.Listener) {
 
 func (s *Server) ServeConn(conn io.ReadWriteCloser) {
 	defer func() { _ = conn.Close() }()
-	var opt Option
-	if err := json.NewDecoder(conn).Decode(&opt); err != nil {
+	var option opt.Option
+	if err := json.NewDecoder(conn).Decode(&option); err != nil {
 		return
 	}
-	if opt.MagicNumber != MagicNumber {
+	if option.MagicNumber != opt.MagicNumber {
 		return
 	}
-	f, ok := codec.NewCodecFuncMap[opt.CodecType]
+	f, ok := codec.NewCodecFuncMap[option.CodecType]
 	if !ok {
 		return
 	}
@@ -104,7 +105,7 @@ func (s *Server) sendResponse(cc codec.Codec, h *codec.Header, body interface{},
 
 func (s *Server) handleRequest(cc codec.Codec, req *request, sending *sync.Mutex, wg *sync.WaitGroup) {
 	defer wg.Done()
-	req.replyv = reflect.ValueOf(fmt.Sprintf("rpc resp %d", req.h.Seq))
+	req.replyv = reflect.ValueOf(fmt.Sprintf("rpc get req <%v> and handled", *req.argv.Interface().(*string)))
 	s.sendResponse(cc, req.h, req.replyv.Interface(), sending)
 }
 

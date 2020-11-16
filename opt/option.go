@@ -1,4 +1,4 @@
-package server
+package opt
 
 import (
 	"github.com/JJJJJJJiYun/go_rpc/codec"
